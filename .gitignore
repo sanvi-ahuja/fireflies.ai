@@ -1,0 +1,36 @@
+# Python / Backend
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.db
+*.sqlite
+*.sqlite3
+fireflies.db
+.venv/
+venv/
+env/
+.env
+.env.local
+
+# Node / Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/.env
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Test artifacts
+.pytest_cache/
+backend/tests/__pycache__/
+backend/app/__pycache__/
+backend/app/routers/__pycache__/
+backend/app/services/__pycache__/
