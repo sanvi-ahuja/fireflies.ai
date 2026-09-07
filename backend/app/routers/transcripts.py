@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models, schemas
 from app.services.parser import parse_transcript_content
+from app.services.ai_engine import generate_ai_summary_and_tasks
 
 router = APIRouter(prefix="/api/meetings", tags=["Transcripts"])
 
@@ -61,8 +62,50 @@ async def upload_transcript_file(
         db.add(obj)
         new_segments.append(obj)
 
+    # Update meeting duration from last segment
     meeting.duration_seconds = int(segments_data[-1]["end_time"])
+
+    # Update participants list with unique speakers extracted from transcript
+    unique_speakers = list({seg["speaker_name"] for seg in segments_data})
+    existing_participants = meeting.participants or []
+    existing_names = {p.get("name") for p in existing_participants}
+    for speaker in unique_speakers:
+        if speaker not in existing_names:
+            existing_participants.append({"name": speaker, "email": ""})
+    meeting.participants = existing_participants
+
+    db.flush()  # flush new segments so AI engine can read them via meeting.segments
+
+    # --- AI Processing: regenerate summary & action items from uploaded transcript ---
+
+    # Remove old summary and action items so they are fully replaced
+    db.query(models.Summary).filter(models.Summary.meeting_id == meeting_id).delete()
+    db.query(models.ActionItem).filter(models.ActionItem.meeting_id == meeting_id).delete()
+
+    # Generate AI summary and tasks from the newly parsed segments
+    ai_result = generate_ai_summary_and_tasks(meeting.title, segments_data)
+
+    # Save new summary
+    new_summary = models.Summary(
+        meeting_id=meeting_id,
+        overview=ai_result["overview"],
+        shorthand_bullet_points=ai_result["shorthand_bullet_points"],
+        key_topics=ai_result["key_topics"]
+    )
+    db.add(new_summary)
+
+    # Save new action items
+    for item in ai_result["action_items"]:
+        db.add(models.ActionItem(
+            meeting_id=meeting_id,
+            text=item["text"],
+            assignee_name=item.get("assignee_name", ""),
+            completed=item.get("completed", False)
+        ))
+
     db.commit()
+    for seg in new_segments:
+        db.refresh(seg)
     return new_segments
 
 @router.post("/{meeting_id}/highlights", response_model=schemas.TranscriptHighlightResponse, status_code=status.HTTP_201_CREATED)

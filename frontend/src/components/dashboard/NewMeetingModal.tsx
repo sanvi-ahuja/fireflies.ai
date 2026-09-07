@@ -16,6 +16,7 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
   const [audioUrl, setAudioUrl] = useState("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStep, setSubmitStep] = useState<"idle" | "creating" | "uploading" | "done">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [tab, setTab] = useState<"paste" | "upload">("paste");
 
@@ -23,13 +24,29 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim()) return;
+
+    // For upload tab, file is mandatory
+    if (tab === "upload" && !file) {
+      setErrorMsg("Please select a transcript file to upload.");
+      return;
+    }
+
+    // Auto-derive title from filename if user left it blank
+    const effectiveTitle = title.trim() ||
+      (tab === "upload" && file ? file.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ") : "");
+
+    if (!effectiveTitle) {
+      setErrorMsg("Please enter a meeting title.");
+      return;
+    }
 
     setIsSubmitting(true);
+    setSubmitStep("creating");
     setErrorMsg(null);
     try {
+      // Step 1 — Create the meeting record
       const created = await createMeeting({
-        title,
+        title: effectiveTitle,
         date: new Date().toISOString(),
         audio_url: audioUrl || undefined,
         raw_transcript_text: tab === "paste" ? rawText : undefined,
@@ -39,10 +56,13 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
         ]
       });
 
+      // Step 2 — Upload & process the transcript file
       if (tab === "upload" && file) {
+        setSubmitStep("uploading");
         await uploadTranscriptFile(created.id, file);
       }
 
+      setSubmitStep("done");
       setTitle("");
       setRawText("");
       setFile(null);
@@ -52,6 +72,7 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
     } catch (err: any) {
       const msg = err?.message || "Failed to create meeting. Make sure the backend is running on http://localhost:8000";
       setErrorMsg(msg);
+      setSubmitStep("idle");
     } finally {
       setIsSubmitting(false);
     }
@@ -85,8 +106,7 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
             <label className="block text-xs font-medium text-slate-300 mb-1">Meeting Title</label>
             <input
               type="text"
-              required
-              placeholder="e.g. Q4 Engineering Architecture Sprint"
+              placeholder={tab === "upload" && file ? file.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ") : "e.g. Q4 Engineering Architecture Sprint"}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full bg-[#171e2c] border border-[#253145] rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
@@ -180,7 +200,9 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
               disabled={isSubmitting}
               className="px-5 py-2 rounded-lg text-xs font-semibold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-md shadow-violet-600/20 disabled:opacity-50 flex items-center space-x-2"
             >
-              {isSubmitting ? "Processing..." : "Generate Meeting Notes"}
+              {submitStep === "creating" ? "Creating Meeting..." :
+               submitStep === "uploading" ? "Processing Transcript..." :
+               "Generate Meeting Notes"}
             </button>
           </div>
         </form>
