@@ -15,10 +15,19 @@ import {
 
 import Logo from "@/components/ui/Logo";
 
+interface NavItem {
+  name: string;
+  href: string;
+  icon: any;
+  active?: boolean;
+  badge?: string;
+  comingSoon?: boolean;
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
 
-  const navItems = [
+  const navItems: NavItem[] = [
     { name: "Meetings Library", href: "/", icon: FolderKanban, active: pathname === "/" || pathname.startsWith("/meetings") },
     { name: "Live Bot Joins", href: "#", icon: Bot, comingSoon: true },
     { name: "Integrations", href: "#", icon: Zap, comingSoon: true },
