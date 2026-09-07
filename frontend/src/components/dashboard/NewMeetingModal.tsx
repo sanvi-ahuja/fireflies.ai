@@ -16,6 +16,7 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
   const [audioUrl, setAudioUrl] = useState("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [tab, setTab] = useState<"paste" | "upload">("paste");
 
   if (!isOpen) return null;
@@ -25,10 +26,12 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
     if (!title.trim()) return;
 
     setIsSubmitting(true);
+    setErrorMsg(null);
     try {
       const created = await createMeeting({
         title,
-        audio_url: audioUrl,
+        date: new Date().toISOString(),
+        audio_url: audioUrl || undefined,
         raw_transcript_text: tab === "paste" ? rawText : undefined,
         participants: [
           { name: "Sarah Chen", email: "sarah@fireflies.ai" },
@@ -43,10 +46,12 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
       setTitle("");
       setRawText("");
       setFile(null);
+      setErrorMsg(null);
       onSuccess();
       onClose();
-    } catch (err) {
-      alert("Error creating meeting. Please check backend connection.");
+    } catch (err: any) {
+      const msg = err?.message || "Failed to create meeting. Make sure the backend is running on http://localhost:8000";
+      setErrorMsg(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -151,6 +156,13 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
                 className="mt-3 text-xs text-slate-400 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-violet-600/20 file:text-violet-300 hover:file:bg-violet-600/30"
               />
+            </div>
+          )}
+
+          {/* Error Message */}
+          {errorMsg && (
+            <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300">
+              {errorMsg}
             </div>
           )}
 

@@ -32,7 +32,15 @@ export async function createMeeting(data: {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to create meeting");
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const detail = err?.detail
+      ? typeof err.detail === "string"
+        ? err.detail
+        : JSON.stringify(err.detail)
+      : `Server error ${res.status}`;
+    throw new Error(detail);
+  }
   return res.json();
 }
 

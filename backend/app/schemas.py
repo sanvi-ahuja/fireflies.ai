@@ -89,7 +89,7 @@ class TranscriptHighlightResponse(BaseModel):
 
 class MeetingBase(BaseModel):
     title: str
-    date: datetime
+    date: Optional[datetime] = None
     duration_seconds: int = 0
     audio_url: Optional[str] = None
     video_url: Optional[str] = None
