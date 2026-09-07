@@ -5,6 +5,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import MeetingCard from "@/components/dashboard/MeetingCard";
 import NewMeetingModal from "@/components/dashboard/NewMeetingModal";
+import EditMeetingModal from "@/components/dashboard/EditMeetingModal";
 import { Meeting } from "@/lib/types";
 import { fetchMeetings, deleteMeeting } from "@/lib/api";
 import { FolderKanban, Filter, ArrowUpDown, Video, CheckSquare, Clock } from "lucide-react";
@@ -16,6 +17,8 @@ export default function Dashboard() {
   const [participantFilter, setParticipantFilter] = useState("");
   const [orderBy, setOrderBy] = useState<"desc" | "asc">("desc");
   const [isNewMeetingOpen, setIsNewMeetingOpen] = useState(false);
+  const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const loadMeetings = async () => {
     setLoading(true);
@@ -40,6 +43,11 @@ export default function Dashboard() {
     } catch (err) {
       alert("Failed to delete meeting.");
     }
+  };
+
+  const handleEditMeeting = (meeting: Meeting) => {
+    setEditingMeeting(meeting);
+    setIsEditModalOpen(true);
   };
 
   const totalMinutes = meetings.reduce((acc, m) => acc + Math.floor(m.duration_seconds / 60), 0);
@@ -158,7 +166,12 @@ export default function Dashboard() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {meetings.map((m) => (
-                <MeetingCard key={m.id} meeting={m} onDelete={handleDeleteMeeting} />
+                <MeetingCard
+                  key={m.id}
+                  meeting={m}
+                  onDelete={handleDeleteMeeting}
+                  onEdit={handleEditMeeting}
+                />
               ))}
             </div>
           )}
@@ -169,6 +182,17 @@ export default function Dashboard() {
       <NewMeetingModal
         isOpen={isNewMeetingOpen}
         onClose={() => setIsNewMeetingOpen(false)}
+        onSuccess={loadMeetings}
+      />
+
+      {/* Edit Meeting Modal */}
+      <EditMeetingModal
+        isOpen={isEditModalOpen}
+        meeting={editingMeeting}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingMeeting(null);
+        }}
         onSuccess={loadMeetings}
       />
     </div>

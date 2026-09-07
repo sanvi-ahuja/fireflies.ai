@@ -13,12 +13,13 @@ import {
   ChevronDown
 } from "lucide-react";
 
+import Logo from "@/components/ui/Logo";
+
 export default function Sidebar() {
   const pathname = usePathname();
 
   const navItems = [
     { name: "Meetings Library", href: "/", icon: FolderKanban, active: pathname === "/" || pathname.startsWith("/meetings") },
-    { name: "Action Items", href: "#action-items", icon: CheckSquare, badge: "3 Pending" },
     { name: "Live Bot Joins", href: "#", icon: Bot, comingSoon: true },
     { name: "Integrations", href: "#", icon: Zap, comingSoon: true },
     { name: "Settings", href: "#", icon: Settings, comingSoon: true },
@@ -29,8 +30,8 @@ export default function Sidebar() {
       {/* Workspace Branding Header */}
       <div className="p-4 border-b border-[#1e2736] flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
-            <Sparkles className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 rounded-xl bg-[#141b26] border border-[#202b3d] flex items-center justify-center shadow-lg shadow-violet-500/20">
+            <Logo size={28} />
           </div>
           <div>
             <h1 className="font-bold text-sm text-white tracking-tight flex items-center">

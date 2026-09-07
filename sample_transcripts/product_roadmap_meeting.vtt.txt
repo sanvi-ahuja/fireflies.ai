@@ -1,0 +1,58 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:06.000
+Sarah Chen: Good morning everyone, let's get started with the Q4 product roadmap review.
+
+00:00:06.500 --> 00:00:14.000
+Alex Rivera: Thanks Sarah. I'll kick off with the engineering update. We completed the authentication module last week and it's now in QA.
+
+00:00:14.500 --> 00:00:22.000
+Sarah Chen: Great progress Alex. We need to make sure the authentication is stable before we move to the dashboard redesign.
+
+00:00:22.500 --> 00:00:31.000
+Priya Patel: I can confirm from the design side — the new dashboard mockups are ready. I'll share the Figma link after this call.
+
+00:00:31.500 --> 00:00:40.000
+Alex Rivera: Perfect. I will need those mockups by Thursday so the frontend team can start implementation by next Monday.
+
+00:00:40.500 --> 00:00:50.000
+Sarah Chen: Noted. Alex, can you also take care of setting up the staging environment for the new pipeline? That should be done by end of week.
+
+00:00:50.500 --> 00:01:00.000
+Alex Rivera: Yes, I'll handle the staging setup. I should be able to get that done by Friday. Will coordinate with DevOps.
+
+00:01:00.500 --> 00:01:10.000
+Priya Patel: On the design side, I need to update the component library to match the new brand guidelines. I will work on that in parallel.
+
+00:01:10.500 --> 00:01:20.000
+James Kim: From the product side — we need to finalize the feature list for the v2.0 release. I'll share the updated PRD document with everyone by tomorrow.
+
+00:01:20.500 --> 00:01:30.000
+Sarah Chen: Good. James, please also make sure the success metrics are clearly defined in the PRD so engineering knows what to optimize for.
+
+00:01:30.500 --> 00:01:40.000
+James Kim: Absolutely. I'll add OKRs and KPIs to each feature section. Should be done by end of day tomorrow.
+
+00:01:40.500 --> 00:01:50.000
+Alex Rivera: One thing I want to flag — we should consider technical debt in our sprint planning. The API layer needs refactoring before we scale.
+
+00:01:50.500 --> 00:02:00.000
+Sarah Chen: Agreed. Let's allocate 20% of next sprint capacity for tech debt. Alex, can you create a task breakdown for that?
+
+00:02:00.500 --> 00:02:10.000
+Alex Rivera: Will do. I'll create the tech debt backlog items in Jira by end of today and tag everyone for review.
+
+00:02:10.500 --> 00:02:20.000
+Priya Patel: Also wanted to mention — user research sessions are scheduled for next Tuesday. I need two engineers to join for the usability testing.
+
+00:02:20.500 --> 00:02:30.000
+James Kim: I can join the user research sessions. It will be helpful for shaping the v2 feature priorities.
+
+00:02:30.500 --> 00:02:40.000
+Sarah Chen: Great. Let's wrap up — to summarize action items: Alex will set up staging and create tech debt tasks, Priya will share Figma and update component library, James will finalize the PRD by tomorrow.
+
+00:02:40.500 --> 00:02:50.000
+Alex Rivera: Confirmed. I'll also send out a summary email after this meeting so everyone has the action items in writing.
+
+00:02:50.500 --> 00:03:00.000
+Sarah Chen: Perfect. Thanks everyone, let's reconnect on Thursday for a quick check-in. Have a great week!

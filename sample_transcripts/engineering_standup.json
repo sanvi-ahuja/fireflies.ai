@@ -1,0 +1,116 @@
+[
+  {
+    "start_time": 1.0,
+    "end_time": 8.0,
+    "speaker_name": "Rahul Sharma",
+    "text": "Alright team, let's start the weekly engineering standup. Who wants to go first?"
+  },
+  {
+    "start_time": 8.5,
+    "end_time": 18.0,
+    "speaker_name": "Emily Wang",
+    "text": "I'll go. Yesterday I finished the database migration scripts for the user table. Today I will work on the API integration for the new search endpoint."
+  },
+  {
+    "start_time": 18.5,
+    "end_time": 28.0,
+    "speaker_name": "Carlos Mendes",
+    "text": "My update — I completed the unit tests for the payment module. Coverage is now at 87%. I found two edge cases that need to be fixed before we release."
+  },
+  {
+    "start_time": 28.5,
+    "end_time": 38.0,
+    "speaker_name": "Rahul Sharma",
+    "text": "Good catch Carlos. Can you create Jira tickets for those edge cases and assign them to yourself? We need those resolved before the Thursday release."
+  },
+  {
+    "start_time": 38.5,
+    "end_time": 48.0,
+    "speaker_name": "Carlos Mendes",
+    "text": "Yes will do. I should be able to fix both issues by Wednesday. I'll update the tickets with my progress by end of day."
+  },
+  {
+    "start_time": 48.5,
+    "end_time": 58.0,
+    "speaker_name": "Aisha Johnson",
+    "text": "For my update — I've been blocked on the third-party analytics SDK integration. Their documentation is outdated and I need to contact their support team."
+  },
+  {
+    "start_time": 58.5,
+    "end_time": 68.0,
+    "speaker_name": "Rahul Sharma",
+    "text": "Aisha, please send me the vendor contact details and I will escalate this directly to their account manager. We can't afford a blocker this close to launch."
+  },
+  {
+    "start_time": 68.5,
+    "end_time": 78.0,
+    "speaker_name": "Emily Wang",
+    "text": "I can help Aisha with the analytics integration. I've worked with similar SDKs before. Let's pair program on it this afternoon if that works."
+  },
+  {
+    "start_time": 78.5,
+    "end_time": 88.0,
+    "speaker_name": "Aisha Johnson",
+    "text": "That would be really helpful Emily, thank you. Let's do 2pm. I'll send you a calendar invite."
+  },
+  {
+    "start_time": 88.5,
+    "end_time": 100.0,
+    "speaker_name": "Carlos Mendes",
+    "text": "Also, the CI/CD pipeline has been throwing intermittent failures on the main branch. I think it's a flaky test in the integration suite. Should we disable it temporarily?"
+  },
+  {
+    "start_time": 100.5,
+    "end_time": 112.0,
+    "speaker_name": "Rahul Sharma",
+    "text": "No, let's not disable it. Carlos, can you take action on investigating the flaky test today? We need the pipeline stable. Add it as a P1 task in Jira."
+  },
+  {
+    "start_time": 112.5,
+    "end_time": 122.0,
+    "speaker_name": "Carlos Mendes",
+    "text": "Understood. I'll take responsibility for the flaky test investigation. Will update the team by 5pm today with my findings."
+  },
+  {
+    "start_time": 122.5,
+    "end_time": 132.0,
+    "speaker_name": "Emily Wang",
+    "text": "One more thing — the performance benchmarks for the new search endpoint are looking good. Response time is under 200ms at p99. No action needed there."
+  },
+  {
+    "start_time": 132.5,
+    "end_time": 142.0,
+    "speaker_name": "Rahul Sharma",
+    "text": "Excellent work Emily. Let's make sure we document those benchmarks in the release notes. Can you update the performance doc by tomorrow?"
+  },
+  {
+    "start_time": 142.5,
+    "end_time": 152.0,
+    "speaker_name": "Emily Wang",
+    "text": "Sure, I will update the performance documentation and share it with the team by tomorrow morning."
+  },
+  {
+    "start_time": 152.5,
+    "end_time": 162.0,
+    "speaker_name": "Aisha Johnson",
+    "text": "Quick note on security — I noticed the API tokens in our staging environment are not rotated regularly. We should implement a rotation policy."
+  },
+  {
+    "start_time": 162.5,
+    "end_time": 172.0,
+    "speaker_name": "Rahul Sharma",
+    "text": "Good point Aisha. Take action on drafting a token rotation policy document and share it with the security team for review by end of week."
+  },
+  {
+    "start_time": 172.5,
+    "end_time": 182.0,
+    "speaker_name": "Aisha Johnson",
+    "text": "Will do. I'll also look into automating the rotation using AWS Secrets Manager. Should have a proposal ready by Friday."
+  },
+  {
+    "start_time": 182.5,
+    "end_time": 192.0,
+    "speaker_name": "Rahul Sharma",
+    "text": "Great. Wrapping up — main action items: Carlos to fix edge cases and investigate flaky tests, Emily to pair with Aisha and update performance docs, Aisha to work on security policy. See everyone tomorrow!"
+  }
+]

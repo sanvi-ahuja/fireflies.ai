@@ -9,6 +9,7 @@ import InteractiveTranscript from "@/components/meeting/InteractiveTranscript";
 import AISummaryTab from "@/components/meeting/AISummaryTab";
 import ActionItemsManager from "@/components/meeting/ActionItemsManager";
 import AskAIChatDrawer from "@/components/ai/AskAIChatDrawer";
+import EditMeetingModal from "@/components/dashboard/EditMeetingModal";
 import { MeetingDetail } from "@/lib/types";
 import { fetchMeetingDetail } from "@/lib/api";
 import { 
@@ -19,7 +20,8 @@ import {
   Download, 
   Bot, 
   Calendar,
-  Share2
+  Pencil,
+  Users
 } from "lucide-react";
 
 export default function MeetingDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -32,18 +34,20 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
   const [currentTime, setCurrentTime] = useState(0);
   const [activeTab, setActiveTab] = useState<"transcript" | "summary" | "action_items">("transcript");
   const [isAskAIOpen, setIsAskAIOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const loadData = async () => {
+    try {
+      const data = await fetchMeetingDetail(meetingId);
+      setMeeting(data);
+    } catch (err) {
+      console.error("Error loading meeting detail", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await fetchMeetingDetail(meetingId);
-        setMeeting(data);
-      } catch (err) {
-        console.error("Error loading meeting detail", err);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadData();
   }, [meetingId]);
 
@@ -101,7 +105,7 @@ ${meeting.segments.map((s) => `[${Math.floor(s.start_time / 60)}:${Math.floor(s.
       {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Top Header */}
-        <header className="h-16 bg-[#0d1117]/80 backdrop-blur-md border-b border-[#1e2736] px-6 flex items-center justify-between sticky top-0 z-20">
+        <header className="py-3 bg-[#0d1117]/80 backdrop-blur-md border-b border-[#1e2736] px-6 flex flex-wrap items-center justify-between sticky top-0 z-20 gap-3">
           <div className="flex items-center space-x-3">
             <Link
               href="/"
@@ -110,20 +114,56 @@ ${meeting.segments.map((s) => `[${Math.floor(s.start_time / 60)}:${Math.floor(s.
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div>
-              <h1 className="text-sm font-bold text-white line-clamp-1 flex items-center">
-                {meeting.title}
-                <span className="ml-2.5 px-2 py-0.5 text-[10px] bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">
-                  Recorded & Synced
+              <div className="flex items-center space-x-2">
+                <h1 className="text-sm font-bold text-white line-clamp-1 flex items-center">
+                  {meeting.title}
+                </h1>
+                <button
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="p-1 text-slate-400 hover:text-violet-300 rounded hover:bg-[#1f283a] transition-colors"
+                  title="Edit title & participants"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Participant Names Bar */}
+              <div className="flex items-center space-x-2 mt-1 flex-wrap gap-y-1">
+                <span className="text-[11px] text-slate-400 flex items-center mr-1">
+                  <Calendar className="w-3 h-3 mr-1 text-slate-500" />
+                  {new Date(meeting.date).toLocaleString()}
                 </span>
-              </h1>
-              <p className="text-[11px] text-slate-400 flex items-center mt-0.5">
-                <Calendar className="w-3 h-3 mr-1 text-slate-500" />
-                {new Date(meeting.date).toLocaleString()}
-              </p>
+                <span className="text-slate-600 text-xs">•</span>
+                <div className="flex items-center space-x-1">
+                  <Users className="w-3 h-3 text-violet-400" />
+                  <span className="text-[11px] text-slate-400 font-medium">Participants:</span>
+                </div>
+                {meeting.participants && meeting.participants.length > 0 ? (
+                  meeting.participants.map((p, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2 py-0.5 text-[10px] bg-violet-500/10 text-violet-300 rounded border border-violet-500/20 font-medium"
+                    >
+                      {p.name}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-[10px] text-slate-500 italic">None listed</span>
+                )}
+              </div>
             </div>
           </div>
 
           <div className="flex items-center space-x-3">
+            {/* Edit Button */}
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-1.5 bg-[#151c28] border border-[#202b3d] text-slate-300 hover:text-white text-xs font-medium rounded-lg transition-colors cursor-pointer"
+            >
+              <Pencil className="w-3.5 h-3.5 text-violet-400" />
+              <span>Edit Details</span>
+            </button>
+
             {/* Ask AI Trigger Button */}
             <button
               onClick={() => setIsAskAIOpen(true)}
@@ -225,6 +265,14 @@ ${meeting.segments.map((s) => `[${Math.floor(s.start_time / 60)}:${Math.floor(s.
         isOpen={isAskAIOpen}
         onClose={() => setIsAskAIOpen(false)}
         onSeekTimestamp={(t) => setCurrentTime(t)}
+      />
+
+      {/* Edit Meeting Modal */}
+      <EditMeetingModal
+        isOpen={isEditModalOpen}
+        meeting={meeting}
+        onClose={() => setIsEditModalOpen(false)}
+        onSuccess={loadData}
       />
     </div>
   );

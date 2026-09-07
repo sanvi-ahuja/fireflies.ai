@@ -61,6 +61,19 @@ export async function deleteMeeting(id: string): Promise<void> {
   if (!res.ok) throw new Error("Failed to delete meeting");
 }
 
+export async function updateMeeting(
+  meetingId: string,
+  data: { title?: string; participants?: { name: string; email?: string }[] }
+): Promise<Meeting> {
+  const res = await fetch(`${API_BASE}/meetings/${meetingId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Failed to update meeting");
+  return res.json();
+}
+
 export async function createActionItem(meetingId: string, text: string, assigneeName?: string): Promise<ActionItem> {
   const res = await fetch(`${API_BASE}/meetings/${meetingId}/action-items`, {
     method: "POST",

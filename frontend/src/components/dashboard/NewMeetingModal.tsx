@@ -4,6 +4,8 @@ import { useState } from "react";
 import { X, Upload, FileText, Sparkles } from "lucide-react";
 import { createMeeting, uploadTranscriptFile } from "@/lib/api";
 
+import Logo from "@/components/ui/Logo";
+
 interface NewMeetingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,7 +15,6 @@ interface NewMeetingModalProps {
 export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeetingModalProps) {
   const [title, setTitle] = useState("");
   const [rawText, setRawText] = useState("");
-  const [audioUrl, setAudioUrl] = useState("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStep, setSubmitStep] = useState<"idle" | "creating" | "uploading" | "done">("idle");
@@ -48,7 +49,6 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
       const created = await createMeeting({
         title: effectiveTitle,
         date: new Date().toISOString(),
-        audio_url: audioUrl || undefined,
         raw_transcript_text: tab === "paste" ? rawText : undefined,
         participants: [
           { name: "Sarah Chen", email: "sarah@fireflies.ai" },
@@ -91,8 +91,8 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
 
         {/* Modal Header */}
         <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400">
-            <Sparkles className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-xl bg-[#141b26] border border-[#202b3d] flex items-center justify-center shadow-lg shadow-violet-500/20">
+            <Logo size={28} />
           </div>
           <div>
             <h2 className="text-base font-bold text-white">Create / Upload New Meeting</h2>
@@ -110,18 +110,6 @@ export default function NewMeetingModal({ isOpen, onClose, onSuccess }: NewMeeti
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full bg-[#171e2c] border border-[#253145] rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
-            />
-          </div>
-
-          {/* Audio URL Input */}
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Audio Sample URL (Optional)</label>
-            <input
-              type="url"
-              placeholder="https://..."
-              value={audioUrl}
-              onChange={(e) => setAudioUrl(e.target.value)}
-              className="w-full bg-[#171e2c] border border-[#253145] rounded-lg px-3 py-2 text-xs text-slate-300 font-mono focus:outline-none focus:border-violet-500"
             />
           </div>
 

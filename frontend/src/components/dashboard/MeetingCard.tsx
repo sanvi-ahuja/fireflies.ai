@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { Meeting } from "@/lib/types";
-import { Clock, Calendar, MessageSquare, CheckSquare, Trash2, ArrowRight } from "lucide-react";
+import { Clock, Calendar, MessageSquare, CheckSquare, Trash2, Pencil, Users } from "lucide-react";
 
 interface MeetingCardProps {
   meeting: Meeting;
   onDelete: (id: string) => void;
+  onEdit?: (meeting: Meeting) => void;
 }
 
-export default function MeetingCard({ meeting, onDelete }: MeetingCardProps) {
+export default function MeetingCard({ meeting, onDelete, onEdit }: MeetingCardProps) {
   const formattedDate = new Date(meeting.date).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -44,46 +45,67 @@ export default function MeetingCard({ meeting, onDelete }: MeetingCardProps) {
 
         {/* Meeting Title */}
         <Link href={`/meetings/${meeting.id}`}>
-          <h2 className="text-sm font-bold text-slate-100 group-hover:text-violet-300 transition-colors line-clamp-2 leading-snug cursor-pointer mb-3">
+          <h2 className="text-sm font-bold text-slate-100 group-hover:text-violet-300 transition-colors line-clamp-2 leading-snug cursor-pointer mb-2">
             {meeting.title}
           </h2>
         </Link>
+
+        {/* Participants Section with explicit Names */}
+        <div className="mt-2 mb-3">
+          <div className="flex items-center space-x-1 mb-1.5 text-[11px] text-slate-400 font-medium">
+            <Users className="w-3.5 h-3.5 text-violet-400" />
+            <span>Participants:</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {meeting.participants && meeting.participants.length > 0 ? (
+              meeting.participants.map((p, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-[#1a2230] border border-[#263347] text-slate-200 font-medium"
+                >
+                  <img
+                    src={p.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${p.name}`}
+                    alt={p.name}
+                    className="w-3.5 h-3.5 rounded-full mr-1 object-cover"
+                  />
+                  {p.name}
+                </span>
+              ))
+            ) : (
+              <span className="text-[11px] text-slate-500 italic">No participants listed</span>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Footer Info & Participants */}
-      <div className="mt-4 pt-3 border-t border-[#1a2230] flex items-center justify-between">
-        {/* Participants Stack */}
-        <div className="flex items-center -space-x-2 overflow-hidden">
-          {meeting.participants && meeting.participants.length > 0 ? (
-            meeting.participants.slice(0, 4).map((p, idx) => (
-              <img
-                key={idx}
-                src={p.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${p.name}`}
-                alt={p.name}
-                title={p.name}
-                className="w-7 h-7 rounded-full border-2 border-[#121721] object-cover bg-slate-800"
-              />
-            ))
-          ) : (
-            <span className="text-[11px] text-slate-500">No participants</span>
-          )}
-          {meeting.participants && meeting.participants.length > 4 && (
-            <span className="w-7 h-7 rounded-full bg-[#1e2736] text-[10px] text-slate-300 border-2 border-[#121721] flex items-center justify-center font-bold">
-              +{meeting.participants.length - 4}
-            </span>
-          )}
-        </div>
-
-        {/* Stat Pills & Actions */}
+      {/* Footer Info & Actions */}
+      <div className="mt-3 pt-3 border-t border-[#1a2230] flex items-center justify-between">
+        {/* Stat Pills */}
         <div className="flex items-center space-x-3">
           <span className="flex items-center text-[11px] text-slate-400" title="Transcript Segments">
             <MessageSquare className="w-3.5 h-3.5 mr-1 text-slate-500" />
-            {meeting.segment_count || 0}
+            {meeting.segment_count || 0} segments
           </span>
           <span className="flex items-center text-[11px] text-slate-400" title="Action Items">
             <CheckSquare className="w-3.5 h-3.5 mr-1 text-violet-400" />
-            {meeting.action_item_count || 0}
+            {meeting.action_item_count || 0} tasks
           </span>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center space-x-1">
+          {onEdit && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                onEdit(meeting);
+              }}
+              title="Edit Title & Participants"
+              className="p-1.5 rounded text-slate-400 hover:text-violet-300 hover:bg-violet-600/10 transition-colors cursor-pointer"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+            </button>
+          )}
 
           <button
             onClick={(e) => {
